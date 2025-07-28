@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "./common.cuh"
 
 __global__ void kernel_add(float* p1, float* p2, float* p3, int N)
 {
@@ -70,7 +71,8 @@ int main()
     dim3 block(32);
     dim3 grid((iElemCount + block.x - 1) / 32);
     kernel_add<<<grid, block>>>(dp1, dp2, dp3, iElemCount);
-    cudaDeviceSynchronize();
+    ErrorCheck(cudaGetLastError(), __FILE__, __LINE__);
+    ErrorCheck(cudaDeviceSynchronize(), __FILE__, __LINE__);
 
     cudaMemcpy(p1, dp1, byteCount, cudaMemcpyDeviceToHost);
     cudaMemcpy(p2, dp2, byteCount, cudaMemcpyDeviceToHost);
